@@ -157,8 +157,8 @@ export default function Import() {
                             </div>
                             {file.processedData && (
                               <p className="text-xs text-gray-500 mt-1">
-                                {typeof file.processedData === 'object' && 'records' in file.processedData 
-                                  ? `${file.processedData.records} records processed`
+                                {typeof file.processedData === 'object' && file.processedData && 'records' in file.processedData 
+                                  ? `${(file.processedData as any).records} records processed`
                                   : "Processed successfully"
                                 }
                               </p>

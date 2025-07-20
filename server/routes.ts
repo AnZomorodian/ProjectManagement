@@ -6,6 +6,8 @@ import {
   insertProjectSchema,
   insertTaskSchema,
   insertProcurementOrderSchema,
+  insertProcurementRequestSchema,
+  insertProjectPhaseSchema,
   insertEngineeringDocumentSchema,
   insertImportedFileSchema,
   insertNotificationSchema,
@@ -166,6 +168,62 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(order);
     } catch (error) {
       res.status(400).json({ error: "Invalid procurement order data" });
+    }
+  });
+
+  // Procurement Requests
+  app.get("/api/procurement-requests", async (req, res) => {
+    try {
+      const projectId = req.query.projectId ? parseInt(req.query.projectId as string) : undefined;
+      const requests = await storage.getProcurementRequests(projectId);
+      res.json(requests);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch procurement requests" });
+    }
+  });
+
+  app.post("/api/procurement-requests", async (req, res) => {
+    try {
+      const requestData = insertProcurementRequestSchema.parse(req.body);
+      const request = await storage.createProcurementRequest(requestData);
+      res.status(201).json(request);
+    } catch (error) {
+      res.status(400).json({ error: "Invalid procurement request data" });
+    }
+  });
+
+  app.put("/api/procurement-requests/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const requestData = insertProcurementRequestSchema.partial().parse(req.body);
+      const request = await storage.updateProcurementRequest(id, requestData);
+      if (!request) {
+        return res.status(404).json({ error: "Procurement request not found" });
+      }
+      res.json(request);
+    } catch (error) {
+      res.status(400).json({ error: "Invalid procurement request data" });
+    }
+  });
+
+  // Project Phases
+  app.get("/api/project-phases", async (req, res) => {
+    try {
+      const projectId = req.query.projectId ? parseInt(req.query.projectId as string) : undefined;
+      const phases = await storage.getProjectPhases(projectId);
+      res.json(phases);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch project phases" });
+    }
+  });
+
+  app.post("/api/project-phases", async (req, res) => {
+    try {
+      const phaseData = insertProjectPhaseSchema.parse(req.body);
+      const phase = await storage.createProjectPhase(phaseData);
+      res.status(201).json(phase);
+    } catch (error) {
+      res.status(400).json({ error: "Invalid project phase data" });
     }
   });
 

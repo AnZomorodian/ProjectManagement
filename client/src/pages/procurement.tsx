@@ -240,7 +240,7 @@ export default function Procurement() {
                         <FormItem>
                           <FormLabel>Description</FormLabel>
                           <FormControl>
-                            <Textarea placeholder="Order description" {...field} />
+                            <Textarea placeholder="Order description" {...field} value={field.value || ""} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>

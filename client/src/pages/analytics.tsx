@@ -9,7 +9,8 @@ import {
   ScatterChart, Scatter, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar
 } from "recharts";
 import { TrendingUp, TrendingDown, DollarSign, Clock, Users, Target, Calendar, AlertTriangle } from "lucide-react";
-import type { Project, Task, ProcurementOrder, EngineeringDocument, DashboardStats } from "@shared/schema";
+import type { Project, Task, ProcurementOrder, EngineeringDocument } from "@shared/schema";
+import type { DashboardStats } from "@/lib/types";
 
 export default function Analytics() {
   const { data: stats } = useQuery<DashboardStats>({

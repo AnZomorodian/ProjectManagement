@@ -25,6 +25,48 @@ export const projects = pgTable("projects", {
   createdBy: integer("created_by").references(() => users.id),
   category: text("category").notNull().default("general"),
   priority: text("priority").notNull().default("medium"),
+  objectives: text("objectives").array(),
+  milestones: jsonb("milestones"),
+  riskAssessment: text("risk_assessment"),
+  stakeholders: text("stakeholders").array(),
+  requirements: jsonb("requirements"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const procurementRequests = pgTable("procurement_requests", {
+  id: serial("id").primaryKey(),
+  projectId: integer("project_id").references(() => projects.id),
+  requestNumber: text("request_number").notNull().unique(),
+  itemName: text("item_name").notNull(),
+  itemDescription: text("item_description"),
+  category: text("category").notNull(),
+  quantity: integer("quantity").notNull(),
+  estimatedCost: decimal("estimated_cost", { precision: 12, scale: 2 }).notNull(),
+  urgency: text("urgency").notNull().default("medium"),
+  justification: text("justification").notNull(),
+  specifications: jsonb("specifications"),
+  preferredVendors: text("preferred_vendors").array(),
+  budgetCode: text("budget_code"),
+  status: text("status").notNull().default("draft"),
+  requestedBy: integer("requested_by").references(() => users.id),
+  approvedBy: integer("approved_by").references(() => users.id),
+  approvalDate: timestamp("approval_date"),
+  requiredDate: timestamp("required_date"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const projectPhases = pgTable("project_phases", {
+  id: serial("id").primaryKey(),
+  projectId: integer("project_id").references(() => projects.id),
+  phaseName: text("phase_name").notNull(),
+  phaseDescription: text("phase_description"),
+  startDate: timestamp("start_date"),
+  endDate: timestamp("end_date"),
+  status: text("status").notNull().default("planning"),
+  dependencies: text("dependencies").array(),
+  deliverables: jsonb("deliverables"),
+  budget: decimal("budget", { precision: 12, scale: 2 }),
+  progress: integer("progress").notNull().default(0),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -108,6 +150,16 @@ export const insertProcurementOrderSchema = createInsertSchema(procurementOrders
   createdAt: true,
 });
 
+export const insertProcurementRequestSchema = createInsertSchema(procurementRequests).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertProjectPhaseSchema = createInsertSchema(projectPhases).omit({
+  id: true,
+  createdAt: true,
+});
+
 export const insertEngineeringDocumentSchema = createInsertSchema(engineeringDocuments).omit({
   id: true,
   createdAt: true,
@@ -135,6 +187,12 @@ export type InsertTask = z.infer<typeof insertTaskSchema>;
 
 export type ProcurementOrder = typeof procurementOrders.$inferSelect;
 export type InsertProcurementOrder = z.infer<typeof insertProcurementOrderSchema>;
+
+export type ProcurementRequest = typeof procurementRequests.$inferSelect;
+export type InsertProcurementRequest = z.infer<typeof insertProcurementRequestSchema>;
+
+export type ProjectPhase = typeof projectPhases.$inferSelect;
+export type InsertProjectPhase = z.infer<typeof insertProjectPhaseSchema>;
 
 export type EngineeringDocument = typeof engineeringDocuments.$inferSelect;
 export type InsertEngineeringDocument = z.infer<typeof insertEngineeringDocumentSchema>;

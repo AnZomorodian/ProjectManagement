@@ -3,6 +3,8 @@ import {
   projects,
   tasks,
   procurementOrders,
+  procurementRequests,
+  projectPhases,
   engineeringDocuments,
   importedFiles,
   notifications,
@@ -14,6 +16,10 @@ import {
   type InsertTask,
   type ProcurementOrder,
   type InsertProcurementOrder,
+  type ProcurementRequest,
+  type InsertProcurementRequest,
+  type ProjectPhase,
+  type InsertProjectPhase,
   type EngineeringDocument,
   type InsertEngineeringDocument,
   type ImportedFile,
@@ -49,6 +55,20 @@ export interface IStorage {
   updateProcurementOrder(id: number, order: Partial<InsertProcurementOrder>): Promise<ProcurementOrder | undefined>;
   deleteProcurementOrder(id: number): Promise<boolean>;
   
+  // Procurement Requests
+  getProcurementRequests(projectId?: number): Promise<ProcurementRequest[]>;
+  getProcurementRequest(id: number): Promise<ProcurementRequest | undefined>;
+  createProcurementRequest(request: InsertProcurementRequest): Promise<ProcurementRequest>;
+  updateProcurementRequest(id: number, request: Partial<InsertProcurementRequest>): Promise<ProcurementRequest | undefined>;
+  deleteProcurementRequest(id: number): Promise<boolean>;
+  
+  // Project Phases
+  getProjectPhases(projectId?: number): Promise<ProjectPhase[]>;
+  getProjectPhase(id: number): Promise<ProjectPhase | undefined>;
+  createProjectPhase(phase: InsertProjectPhase): Promise<ProjectPhase>;
+  updateProjectPhase(id: number, phase: Partial<InsertProjectPhase>): Promise<ProjectPhase | undefined>;
+  deleteProjectPhase(id: number): Promise<boolean>;
+  
   // Engineering Documents
   getEngineeringDocuments(projectId?: number): Promise<EngineeringDocument[]>;
   getEngineeringDocument(id: number): Promise<EngineeringDocument | undefined>;
@@ -81,6 +101,8 @@ export class MemStorage implements IStorage {
   private projects: Map<number, Project>;
   private tasks: Map<number, Task>;
   private procurementOrders: Map<number, ProcurementOrder>;
+  private procurementRequests: Map<number, ProcurementRequest>;
+  private projectPhases: Map<number, ProjectPhase>;
   private engineeringDocuments: Map<number, EngineeringDocument>;
   private importedFiles: Map<number, ImportedFile>;
   private notifications: Map<number, Notification>;
@@ -88,6 +110,8 @@ export class MemStorage implements IStorage {
   private currentProjectId: number;
   private currentTaskId: number;
   private currentOrderId: number;
+  private currentRequestId: number;
+  private currentPhaseId: number;
   private currentDocId: number;
   private currentFileId: number;
   private currentNotificationId: number;
@@ -97,6 +121,8 @@ export class MemStorage implements IStorage {
     this.projects = new Map();
     this.tasks = new Map();
     this.procurementOrders = new Map();
+    this.procurementRequests = new Map();
+    this.projectPhases = new Map();
     this.engineeringDocuments = new Map();
     this.importedFiles = new Map();
     this.notifications = new Map();
@@ -104,6 +130,8 @@ export class MemStorage implements IStorage {
     this.currentProjectId = 1;
     this.currentTaskId = 1;
     this.currentOrderId = 1;
+    this.currentRequestId = 1;
+    this.currentPhaseId = 1;
     this.currentDocId = 1;
     this.currentFileId = 1;
     this.currentNotificationId = 1;
@@ -142,6 +170,7 @@ export class MemStorage implements IStorage {
     const user: User = { 
       ...insertUser, 
       id, 
+      role: insertUser.role || "user",
       createdAt: new Date() 
     };
     this.users.set(id, user);
@@ -247,6 +276,74 @@ export class MemStorage implements IStorage {
 
   async deleteProcurementOrder(id: number): Promise<boolean> {
     return this.procurementOrders.delete(id);
+  }
+
+  // Procurement Requests
+  async getProcurementRequests(projectId?: number): Promise<ProcurementRequest[]> {
+    const requests = Array.from(this.procurementRequests.values());
+    return projectId ? requests.filter(req => req.projectId === projectId) : requests;
+  }
+
+  async getProcurementRequest(id: number): Promise<ProcurementRequest | undefined> {
+    return this.procurementRequests.get(id);
+  }
+
+  async createProcurementRequest(insertRequest: InsertProcurementRequest): Promise<ProcurementRequest> {
+    const id = this.currentRequestId++;
+    const request: ProcurementRequest = { 
+      ...insertRequest, 
+      id, 
+      createdAt: new Date() 
+    };
+    this.procurementRequests.set(id, request);
+    return request;
+  }
+
+  async updateProcurementRequest(id: number, updateData: Partial<InsertProcurementRequest>): Promise<ProcurementRequest | undefined> {
+    const request = this.procurementRequests.get(id);
+    if (!request) return undefined;
+    
+    const updatedRequest = { ...request, ...updateData };
+    this.procurementRequests.set(id, updatedRequest);
+    return updatedRequest;
+  }
+
+  async deleteProcurementRequest(id: number): Promise<boolean> {
+    return this.procurementRequests.delete(id);
+  }
+
+  // Project Phases
+  async getProjectPhases(projectId?: number): Promise<ProjectPhase[]> {
+    const phases = Array.from(this.projectPhases.values());
+    return projectId ? phases.filter(phase => phase.projectId === projectId) : phases;
+  }
+
+  async getProjectPhase(id: number): Promise<ProjectPhase | undefined> {
+    return this.projectPhases.get(id);
+  }
+
+  async createProjectPhase(insertPhase: InsertProjectPhase): Promise<ProjectPhase> {
+    const id = this.currentPhaseId++;
+    const phase: ProjectPhase = { 
+      ...insertPhase, 
+      id, 
+      createdAt: new Date() 
+    };
+    this.projectPhases.set(id, phase);
+    return phase;
+  }
+
+  async updateProjectPhase(id: number, updateData: Partial<InsertProjectPhase>): Promise<ProjectPhase | undefined> {
+    const phase = this.projectPhases.get(id);
+    if (!phase) return undefined;
+    
+    const updatedPhase = { ...phase, ...updateData };
+    this.projectPhases.set(id, updatedPhase);
+    return updatedPhase;
+  }
+
+  async deleteProjectPhase(id: number): Promise<boolean> {
+    return this.projectPhases.delete(id);
   }
 
   // Engineering Documents

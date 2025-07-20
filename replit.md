@@ -37,12 +37,14 @@ The application follows a monorepo structure with clear separation between clien
 - **Migrations**: Managed through `drizzle-kit`
 
 ### Core Entities
-1. **Projects**: Main project entities with status tracking, budgets, and progress
+1. **Projects**: Enhanced project entities with objectives, stakeholders, milestones, and risk assessment
 2. **Tasks**: Project-related tasks with assignments and due dates
 3. **Procurement Orders**: Vendor management and order tracking
-4. **Engineering Documents**: Document management with file storage
-5. **Imported Files**: File upload tracking and processing status
-6. **Users**: Basic user management with roles
+4. **Procurement Requests**: Comprehensive request system with specifications, approvals, and justifications
+5. **Project Phases**: Phase-based project management with dependencies and deliverables
+6. **Engineering Documents**: Document management with file storage
+7. **Imported Files**: File upload tracking and processing status
+8. **Users**: Basic user management with roles
 
 ### UI Components
 - **Layout**: Sidebar navigation with responsive design
@@ -97,9 +99,22 @@ The application follows a monorepo structure with clear separation between clien
 
 ## Key Features
 
-1. **Multi-module Design**: Engineering, Procurement, Planning, Analytics
-2. **File Import System**: CSV/Excel processing with status tracking
-3. **Responsive UI**: Mobile-friendly design with adaptive layouts
-4. **Data Visualization**: Interactive charts and progress tracking
-5. **Form Validation**: Client and server-side validation with Zod
-6. **Type Safety**: Full TypeScript coverage with shared schemas
+1. **Comprehensive Planning Hub**: Enhanced first-phase PMIS with project creation wizards and procurement management
+2. **Step-by-Step Workflows**: Project creation wizard with objectives, stakeholders, and risk assessment
+3. **Procurement Request System**: Full procurement workflow with specifications, vendor preferences, and approval tracking  
+4. **Classic Enterprise Design**: Professional styling with section-specific theming for planning, engineering, and procurement
+5. **File Import System**: CSV/Excel processing with status tracking
+6. **Responsive UI**: Mobile-friendly design with adaptive layouts
+7. **Data Visualization**: Interactive charts and progress tracking
+8. **Form Validation**: Client and server-side validation with Zod
+9. **Type Safety**: Full TypeScript coverage with shared schemas
+
+## Recent Changes (July 20, 2025)
+
+- Enhanced planning section as the comprehensive first phase of PMIS
+- Implemented step-by-step project creation wizard with objectives, stakeholders, and risk assessment
+- Added comprehensive procurement request system with specifications and vendor management
+- Created classic enterprise styling with gradient headers and professional design
+- Extended database schema with procurement requests and project phases
+- Added full API routes and storage methods for new entities
+- Designed executive dashboard with key performance indicators
